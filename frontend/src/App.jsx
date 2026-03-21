@@ -16,11 +16,13 @@ export default function App() {
   const [error, setError] = useState(null);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const [isConnected, setIsConnected] = useState(true);
 
   // ... (useEffect and handlers same as before)
   useEffect(() => {
     const wake = async () => {
       const ready = await pingServer();
+      setIsConnected(ready);
       setIsWaking(false);
     };
     wake();
@@ -138,8 +140,15 @@ export default function App() {
 
             {error && (
               <div className="mt-8 max-w-xl mx-auto p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-4 text-red-500">
-                <Info className="w-5 h-5" />
+                <Info className="w-5 h-5 shrink-0" />
                 <p className="text-sm font-medium">{error}</p>
+              </div>
+            )}
+
+            {!isConnected && !isWaking && (
+              <div className="mt-8 max-w-xl mx-auto p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-4 text-amber-500 text-left">
+                <Info className="w-6 h-6 shrink-0" />
+                <p className="text-sm font-medium">Warning: Handshake failed. Could not reach the backend server. If you just deployed, check if the server is still booting up or verify your API URL.</p>
               </div>
             )}
           </div>
