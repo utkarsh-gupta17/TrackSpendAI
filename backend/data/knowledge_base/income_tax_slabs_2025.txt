@@ -1,0 +1,28 @@
+Income Tax Slabs for Financial Year 2025-26
+
+New Tax Regime Slabs (Default):
+- Up to ₹4,00,000: Nil
+- ₹4,00,001 to ₹8,00,000: 5%
+- ₹8,00,001 to ₹12,00,000: 10%
+- ₹12,00,001 to ₹16,00,000: 15%
+- ₹16,00,001 to ₹20,00,000: 20%
+- ₹20,00,001 to ₹24,00,000: 25%
+- Above ₹24,00,000: 30%
+
+Standard Deduction:
+A standard deduction of ₹75,000 is available for salaried individuals and pensioners under the New Tax Regime. In the Old Regime, this is ₹50,000.
+
+Section 87A Rebate:
+Salaried individuals under the New Tax Regime with an income up to ₹12.75 lakhs may effectively pay zero tax due to rebates under Section 87A.
+
+Old Tax Regime Slabs:
+- Up to ₹2,50,000: Nil
+- ₹2,50,001 to ₹5,00,000: 5%
+- ₹5,00,001 to ₹10,00,000: 20%
+- Above ₹10,00,000: 30%
+
+Deductions under Old Regime:
+- Section 80C: Deduction up to ₹1.5 lakh for investments in PPF, ELSS, LIC, NSC, Unit Linked Insurance Plans (ULIPs), 5-year Fixed Deposits, and home loan principal repayment.
+- Section 80D: Health insurance premium deduction up to ₹25,000 for self/family and ₹50,000 for senior citizens.
+- Section 24(b): Interest on home loan deduction up to ₹2 lakh for self-occupied properties.
+- NPS (National Pension System): Additional deduction of ₹50,000 under Section 80CCD(1B).

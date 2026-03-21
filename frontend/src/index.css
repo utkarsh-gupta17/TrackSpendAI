@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: var(--bg);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-accent: #7c3aed;
+
+  /* Map Tailwind defaults to our theme CSS variables */
+  --color-white: var(--tw-white);
+  --color-gray-200: var(--tw-gray-200);
+  --color-gray-300: var(--tw-gray-300);
+  --color-gray-400: var(--tw-gray-400);
+  --color-gray-500: var(--tw-gray-500);
+  --color-gray-600: var(--tw-gray-600);
+  --color-black: var(--tw-black);
+
+  --font-sans: "Inter", "sans-serif";
+  --radius-lg: 0.5rem;
+  --radius-full: 9999px;
+}
+
+@layer base {
+  :root {
+    /* Dark Mode (Current Defaults) */
+    --bg: #0a0a0f;
+    --card: #13131a;
+    --border: #1e1e2e;
+
+    /* Original Tailwind Default Colors */
+    --tw-white: #ffffff;
+    --tw-gray-200: #e5e7eb;
+    --tw-gray-300: #d1d5db;
+    --tw-gray-400: #9ca3af;
+    --tw-gray-500: #6b7280;
+    --tw-gray-600: #4b5563;
+    --tw-black: #000000;
+  }
+  
+  .light {
+    /* Light Mode (Day Mode) */
+    --bg: #ffffff;
+    --card: #f8fafc;
+    --border: #e2e8f0;
+  }
+  
+  /* Force override Tailwind utilities in Light Mode */
+  .light .text-white { color: #0f172a !important; }
+  .light .text-gray-200 { color: #1e293b !important; }
+  .light .text-gray-300 { color: #334155 !important; }
+  .light .text-gray-400 { color: #475569 !important; }
+  .light .text-gray-500 { color: #64748b !important; }
+  .light .text-gray-600 { color: #94a3b8 !important; }
+  .light .bg-black { background-color: #ffffff !important; }
+
+  body {
+    background-color: var(--bg);
+    color: var(--tw-white);
+    font-family: var(--font-sans);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Make sure anything that forces literal white overrides the theme mappings */
+  .text-white-keep { color: #ffffff !important; }
+}
+
+.spinner {
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top: 3px solid #7c3aed;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+.light .spinner {
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top: 3px solid #7c3aed;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #7c3aed80;
+}
