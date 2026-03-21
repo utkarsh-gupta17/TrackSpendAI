@@ -43,16 +43,6 @@
     --card: #f8fafc;
     --border: #e2e8f0;
   }
-  
-  /* Force override Tailwind utilities in Light Mode */
-  .light .text-white { color: #0f172a !important; }
-  .light .text-gray-200 { color: #1e293b !important; }
-  .light .text-gray-300 { color: #334155 !important; }
-  .light .text-gray-400 { color: #475569 !important; }
-  .light .text-gray-500 { color: #64748b !important; }
-  .light .text-gray-600 { color: #94a3b8 !important; }
-  .light .bg-black { background-color: #ffffff !important; }
-
   body {
     background-color: var(--bg);
     color: var(--tw-white);
@@ -63,6 +53,15 @@
   /* Make sure anything that forces literal white overrides the theme mappings */
   .text-white-keep { color: #ffffff !important; }
 }
+
+/* Force override Tailwind utilities in Light Mode - Globally scoped */
+.light .text-white { color: #0f172a !important; }
+.light .text-gray-200 { color: #1e293b !important; }
+.light .text-gray-300 { color: #334155 !important; }
+.light .text-gray-400 { color: #475569 !important; }
+.light .text-gray-500 { color: #64748b !important; }
+.light .text-gray-600 { color: #94a3b8 !important; }
+.light .bg-black { background-color: #ffffff !important; }
 
 .spinner {
   border: 3px solid rgba(255, 255, 255, 0.1);

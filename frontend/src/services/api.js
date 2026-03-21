@@ -9,11 +9,11 @@ export const streamAnalysis = async (formData, onProgress, onResult, onError) =>
     })
 
     if (!response.ok) {
-        if (response.status === 400) {
-            const errData = await response.json();
-            throw new Error(errData.message || 'Bad Request');
-        }
-        throw new Error(`Server error: ${response.status}`)
+      if (response.status === 400) {
+        const errData = await response.json();
+        throw new Error(errData.message || 'Bad Request');
+      }
+      throw new Error(`Server error: ${response.status}`)
     }
 
     const reader = response.body.getReader()
@@ -73,12 +73,11 @@ export const streamAnalysis = async (formData, onProgress, onResult, onError) =>
 }
 
 export const pingServer = async () => {
-    try {
-        console.log("Pinging backend at:", `${API_URL}/ping`);
-        const response = await fetch(`${API_URL}/ping`, { signal: AbortSignal.timeout(40000) });
-        return response.ok;
-    } catch (e) {
-        console.error("Ping failed:", e);
-        return false;
-    }
+  try {
+    const response = await fetch(`${API_URL}/ping`, { signal: AbortSignal.timeout(40000) });
+    return response.ok;
+  } catch (e) {
+    console.error("Ping failed:", e);
+    return false;
+  }
 }
