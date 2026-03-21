@@ -73,7 +73,7 @@ export default function PipelineProgress({ progress }) {
                 ) : isActive ? (
                   <Loader2 className="w-6 h-6 text-accent animate-spin" />
                 ) : (
-                  <Circle className="w-6 h-6 text-gray-700" />
+                  <Circle className="w-6 h-6 text-muted-foreground/30" />
                 )}
               </div>
             </div>

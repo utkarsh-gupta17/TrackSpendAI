@@ -74,7 +74,7 @@ export default function App() {
             <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
               <Shield className="text-accent w-6 h-6" /> Security & Privacy
             </h3>
-            <ul className="space-y-4 text-gray-400 text-sm">
+            <ul className="space-y-4 text-muted-foreground text-sm">
               <li className="flex gap-3">
                 <span className="text-accent font-bold">•</span>
                 <span><b>Local Filtering:</b> Your transaction descriptions are parsed locally. Only anonymized metadata is processed by AI.</span>
@@ -132,7 +132,7 @@ export default function App() {
               <h1 className="text-6xl font-black mb-6 tracking-tight leading-tight">
                 Intelligence for your <span className="text-accent">UPI spending.</span>
               </h1>
-              <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                 Upload your digital statement and watch our AI agents uncover hidden spending patterns, detected anomalies, and grounded financial advice.
               </p>
             </div>
@@ -163,11 +163,11 @@ export default function App() {
             <div className="flex items-center justify-between mb-12">
               <div>
                 <h2 className="text-3xl font-bold">Analysis Results</h2>
-                <p className="text-gray-400">For educational purposes only. Consult a SEBI-registered financial advisor for personalised advice.</p>
+                <p className="text-muted-foreground">For educational purposes only. Consult a SEBI-registered financial advisor for personalised advice.</p>
               </div>
               <button
                 onClick={() => setPipelineState('idle')}
-                className="bg-card hover:bg-border text-white px-6 py-3 rounded-2xl font-bold text-sm transition-all border border-border"
+                className="bg-card hover:bg-border text-foreground px-6 py-3 rounded-2xl font-bold text-sm transition-all border border-border"
               >
                 Analyze New
               </button>
@@ -181,7 +181,7 @@ export default function App() {
       </main>
 
       <footer className="mt-20 py-12 border-t border-border bg-card/10 text-center">
-        <p className="text-xs text-gray-600 font-medium">© 2024 TrackSpendAI · AI-POWERED UPI INTELLIGENCE PLATFORM</p>
+        <p className="text-xs text-subtle font-medium">© 2024 TrackSpendAI · AI-POWERED UPI INTELLIGENCE PLATFORM</p>
       </footer>
     </div>
   );

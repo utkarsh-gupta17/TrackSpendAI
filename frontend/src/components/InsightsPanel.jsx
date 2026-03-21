@@ -20,17 +20,17 @@ const RecommendationCard = ({ rec }) => {
               }`}>
               {rec.priority || 'low'} Priority
             </span>
-            <span className="text-[10px] font-bold text-gray-500 bg-border px-2 py-1 rounded-md flex items-center gap-1">
+            <span className="text-[10px] font-bold text-subtle bg-border px-2 py-1 rounded-md flex items-center gap-1">
               <ShieldCheck className="w-3 h-3" /> {rec.source || 'General Finance'}
             </span>
           </div>
           <h4 className="text-lg font-bold mb-3 leading-tight">{rec.title || 'Guideline'}</h4>
           <div className="flex-grow">
-            <p className="text-gray-400 text-sm leading-relaxed">{rec.action || rec.detail || 'Action details not available.'}</p>
+            <p className="text-muted-foreground text-sm leading-relaxed">{rec.action || rec.detail || 'Action details not available.'}</p>
           </div>
           <button
             onClick={() => setIsFlipped(true)}
-            className="mt-6 self-start text-xs font-bold text-accent hover:text-white transition-colors flex items-center gap-2 bg-accent/10 px-4 py-2 rounded-xl"
+            className="mt-6 self-start text-xs font-bold text-accent hover:text-foreground transition-colors flex items-center gap-2 bg-accent/10 px-4 py-2 rounded-xl"
           >
             Why this reason? &rarr;
           </button>
@@ -46,13 +46,13 @@ const RecommendationCard = ({ rec }) => {
             <h4 className="font-bold text-lg">The "Why"</h4>
           </div>
           <div className="flex-grow">
-            <p className="text-gray-300 text-sm leading-relaxed">
+            <p className="text-muted text-sm leading-relaxed">
               {rec.reason || 'We determined this from a holistic analysis of your recent spending habits and anomalies.'}
             </p>
           </div>
           <button
             onClick={() => setIsFlipped(false)}
-            className="mt-6 self-start text-xs font-bold text-gray-400 hover:text-white transition-colors flex items-center gap-2 border border-border/50 px-4 py-2 rounded-xl hover:bg-card hover:border-border"
+            className="mt-6 self-start text-xs font-bold text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 border border-border/50 px-4 py-2 rounded-xl hover:bg-card hover:border-border"
           >
             &larr; Back to Insight
           </button>
@@ -87,7 +87,7 @@ export default function InsightsPanel({ report }) {
             }`}>
             {health_label} Health
           </span>
-          <span className="text-gray-500 text-xs font-medium">Verified by TrackSpendAI AI</span>
+          <span className="text-subtle text-xs font-medium">Verified by TrackSpendAI AI</span>
         </div>
         <h2 className="text-4xl font-bold mb-8 leading-tight max-w-2xl">{headline}</h2>
 
@@ -95,7 +95,7 @@ export default function InsightsPanel({ report }) {
           {(top_insights || []).map((insight, i) => (
             <div key={i} className="flex gap-4 items-start">
               <div className="w-2 h-2 rounded-full bg-accent mt-2 shrink-0"></div>
-              <p className="text-lg text-gray-300 leading-relaxed">{insight}</p>
+              <p className="text-lg text-muted leading-relaxed">{insight}</p>
             </div>
           ))}
         </div>

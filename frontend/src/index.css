@@ -5,15 +5,13 @@
   --color-card: var(--card);
   --color-border: var(--border);
   --color-accent: #7c3aed;
-
-  /* Map Tailwind defaults to our theme CSS variables */
-  --color-white: var(--tw-white);
-  --color-gray-200: var(--tw-gray-200);
-  --color-gray-300: var(--tw-gray-300);
-  --color-gray-400: var(--tw-gray-400);
-  --color-gray-500: var(--tw-gray-500);
-  --color-gray-600: var(--tw-gray-600);
-  --color-black: var(--tw-black);
+  
+  --color-foreground: var(--fg);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-fg);
+  --color-subtle: var(--subtle);
+  --color-tooltip: var(--tooltip);
+  --color-tooltip-border: var(--tooltip-border);
 
   --font-sans: "Inter", "sans-serif";
   --radius-lg: 0.5rem;
@@ -27,14 +25,13 @@
     --card: #13131a;
     --border: #1e1e2e;
 
-    /* Original Tailwind Default Colors */
-    --tw-white: #ffffff;
-    --tw-gray-200: #e5e7eb;
-    --tw-gray-300: #d1d5db;
-    --tw-gray-400: #9ca3af;
-    --tw-gray-500: #6b7280;
-    --tw-gray-600: #4b5563;
-    --tw-black: #000000;
+    /* Semantic Mappings for Dark */
+    --fg: #ffffff;
+    --muted: #e5e7eb;
+    --muted-fg: #9ca3af;
+    --subtle: #6b7280;
+    --tooltip: #000000;
+    --tooltip-border: rgba(255, 255, 255, 0.1);
   }
   
   .light {
@@ -42,26 +39,26 @@
     --bg: #ffffff;
     --card: #f8fafc;
     --border: #e2e8f0;
+
+    /* Semantic Mappings for Light */
+    --fg: #0f172a;
+    --muted: #1e293b; 
+    --muted-fg: #475569; 
+    --subtle: #64748b; 
+    --tooltip: #ffffff;
+    --tooltip-border: rgba(0, 0, 0, 0.1);
   }
+
   body {
     background-color: var(--bg);
-    color: var(--tw-white);
+    color: var(--fg);
     font-family: var(--font-sans);
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* Make sure anything that forces literal white overrides the theme mappings */
+  /* Keep anything explicitly requiring standard white */
   .text-white-keep { color: #ffffff !important; }
 }
-
-/* Force override Tailwind utilities in Light Mode - Globally scoped */
-.light .text-white { color: #0f172a !important; }
-.light .text-gray-200 { color: #1e293b !important; }
-.light .text-gray-300 { color: #334155 !important; }
-.light .text-gray-400 { color: #475569 !important; }
-.light .text-gray-500 { color: #64748b !important; }
-.light .text-gray-600 { color: #94a3b8 !important; }
-.light .bg-black { background-color: #ffffff !important; }
 
 .spinner {
   border: 3px solid rgba(255, 255, 255, 0.1);

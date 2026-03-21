@@ -202,7 +202,7 @@ export default function SpendingDashboard({ report }) {
                 
                 return (
                   <div key={month} className="flex items-center gap-4 group relative">
-                    <span className="w-16 text-[10px] font-medium text-gray-400 whitespace-nowrap text-right shrink-0">{month}</span>
+                    <span className="w-16 text-[10px] font-medium text-subtle whitespace-nowrap text-right shrink-0">{month}</span>
                     <div className="flex-grow relative flex items-center h-8 cursor-pointer">
                         {/* Spend Bar */}
                         <div 
@@ -211,12 +211,12 @@ export default function SpendingDashboard({ report }) {
                         />
                     </div>
                     {/* Custom Tooltip */}
-                    <div className="absolute left-[80px] top-full mt-1 opacity-0 group-hover:opacity-100 transition-opacity bg-black border border-white/10 text-white px-4 py-3 rounded-xl whitespace-nowrap z-50 pointer-events-none shadow-2xl flex flex-col items-start min-w-[140px] space-y-1">
+                    <div className="absolute left-[80px] top-full mt-1 opacity-0 group-hover:opacity-100 transition-opacity bg-tooltip border border-tooltip-border text-foreground px-4 py-3 rounded-xl whitespace-nowrap z-50 pointer-events-none shadow-2xl flex flex-col items-start min-w-[140px] space-y-1">
                         <div className="flex justify-between w-full text-xs gap-4">
-                          <span className="text-gray-400">Spend:</span>
+                          <span className="text-muted-foreground">Spend:</span>
                           <span className="font-bold text-accent">₹{data.debit.toLocaleString('en-IN')}</span>
                         </div>
-                        {data.debit === maxDebit && maxDebit > 0 && <span className="text-gray-400 mt-2 uppercase tracking-widest text-[9px] pt-1 border-t border-white/10 w-full text-center">Highest Spend</span>}
+                        {data.debit === maxDebit && maxDebit > 0 && <span className="text-subtle mt-2 uppercase tracking-widest text-[9px] pt-1 border-t border-tooltip-border w-full text-center">Highest Spend</span>}
                     </div>
                   </div>
                 )

@@ -32,8 +32,8 @@ export default function AnomalyPanel({ report }) {
                 <span className="text-lg font-bold">₹{(anomaly.amount || 0).toLocaleString('en-IN')}</span>
               </div>
               <h4 className="font-bold text-lg mb-1">{anomaly.type || 'Unusual Pattern'}</h4>
-              <p className="text-gray-400 text-sm mb-4 leading-relaxed">{anomaly.reason || 'Detected unusal activity.'}</p>
-              <div className="flex items-center justify-between text-[11px] text-gray-500">
+              <p className="text-muted-foreground text-sm mb-4 leading-relaxed">{anomaly.reason || 'Detected unusal activity.'}</p>
+              <div className="flex items-center justify-between text-[11px] text-subtle">
                 <span>{anomaly.date ? new Date(anomaly.date).toLocaleDateString() : 'Recent'}</span>
                 <button className="opacity-0 group-hover:opacity-100 transition-opacity text-accent hover:underline">Mark as safe</button>
               </div>
@@ -45,7 +45,7 @@ export default function AnomalyPanel({ report }) {
              <div className="p-2 bg-accent/10 rounded-lg">
                 <Info className="w-5 h-5 text-accent" />
              </div>
-             <p className="text-gray-300 italic leading-relaxed">
+             <p className="text-muted italic leading-relaxed">
                 "{anomaly_narrative}"
              </p>
         </div>

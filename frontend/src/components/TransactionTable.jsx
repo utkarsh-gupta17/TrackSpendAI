@@ -75,7 +75,7 @@ export default function TransactionTable({ transactions = [] }) {
         <h3 className="text-xl font-bold">Transactions</h3>
         <div className="flex flex-wrap gap-4 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-subtle" />
             <input
               type="text"
               placeholder="Search transactions..."
@@ -136,10 +136,10 @@ export default function TransactionTable({ transactions = [] }) {
           <tbody className="divide-y divide-border/50">
             {currentRows.map((t, i) => (
               <tr key={i} className="hover:bg-accent/5 transition-colors group">
-                <td className="px-8 py-5 text-sm text-gray-400">{new Date(t.date).toLocaleDateString()}</td>
+                <td className="px-8 py-5 text-sm text-muted-foreground">{new Date(t.date).toLocaleDateString()}</td>
                 <td className="px-8 py-5">
-                  <p className="font-medium text-sm group-hover:text-white transition-colors">{t.counterparty || t.description}</p>
-                  {t.counterparty && <p className="text-[10px] text-gray-600 truncate max-w-[300px] mt-0.5">{t.description}</p>}
+                  <p className="font-medium text-sm group-hover:text-foreground transition-colors">{t.counterparty || t.description}</p>
+                  {t.counterparty && <p className="text-[10px] text-subtle truncate max-w-[300px] mt-0.5">{t.description}</p>}
                 </td>
                 <td className="px-8 py-5">
                   <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-accent/10 text-accent border border-accent/20">
@@ -156,7 +156,7 @@ export default function TransactionTable({ transactions = [] }) {
       </div>
 
       <div className="p-8 border-t border-border flex justify-between items-center bg-background/30">
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-subtle">
           Showing {Math.min(filtered.length, (currentPage - 1) * rowsPerPage + 1)}-{Math.min(filtered.length, currentPage * rowsPerPage)} of {filtered.length} transactions
         </p>
         <div className="flex gap-2">

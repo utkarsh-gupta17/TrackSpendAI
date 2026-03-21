@@ -36,7 +36,7 @@ export default function UploadZone({ onUpload, onDemo, isWaking }) {
           <Lock className="w-8 h-8 text-accent" />
         </div>
         <h2 className="text-2xl font-bold mb-2">Password Protected</h2>
-        <p className="text-gray-400 mb-8">
+        <p className="text-muted-foreground mb-8">
           This PDF is protected. For PhonePe statements, enter your 10-digit mobile number.
         </p>
         <div className="flex gap-2">
@@ -82,7 +82,7 @@ export default function UploadZone({ onUpload, onDemo, isWaking }) {
         </div>
         
         <h2 className="text-3xl font-bold mb-4">Upload your UPI statement</h2>
-        <p className="text-gray-400 mb-8 text-lg">
+        <p className="text-muted-foreground mb-8 text-lg">
           Drag and drop your PDF, CSV, or XLSX statement here.<br />
           Works with PhonePe, Paytm, and all major banks.
         </p>
@@ -94,7 +94,7 @@ export default function UploadZone({ onUpload, onDemo, isWaking }) {
           Select File <ArrowRight className="w-5 h-5" />
         </button>
 
-        <p className="mt-6 text-sm text-gray-500 flex items-center justify-center gap-2">
+        <p className="mt-6 text-sm text-subtle flex items-center justify-center gap-2">
             <Lock className="w-4 h-4" /> Your data never leaves this session and is not stored.
         </p>
       </div>
@@ -102,7 +102,7 @@ export default function UploadZone({ onUpload, onDemo, isWaking }) {
       <div className="mt-8 text-center">
         <button
           onClick={onDemo}
-          className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 mx-auto group"
+          className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 mx-auto group"
         >
           Try with demo data <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </button>
