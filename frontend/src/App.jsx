@@ -9,7 +9,6 @@ import TransactionTable from './components/TransactionTable';
 import { Search, User, BarChart3, Shield, Info, Sun, Moon } from 'lucide-react';
 
 export default function App() {
-  const [isWaking, setIsWaking] = useState(true);
   const [pipelineState, setPipelineState] = useState('idle'); // idle, running, result, error
   const [progress, setProgress] = useState(null);
   const [result, setResult] = useState(null);
@@ -20,12 +19,15 @@ export default function App() {
 
   // ... (useEffect and handlers same as before)
   useEffect(() => {
-    const wake = async () => {
-      const ready = await pingServer();
-      setIsConnected(ready);
-      setIsWaking(false);
+    const checkHealth = async () => {
+      try {
+        const ready = await pingServer();
+        setIsConnected(ready);
+      } catch {
+        setIsConnected(false);
+      }
     };
-    wake();
+    checkHealth();
   }, []);
 
   useEffect(() => {
@@ -136,7 +138,7 @@ export default function App() {
                 Upload your digital statement and watch our AI agents uncover hidden spending patterns, detected anomalies, and grounded financial advice.
               </p>
             </div>
-            <UploadZone onUpload={handleUpload} onDemo={handleDemo} isWaking={isWaking} />
+            <UploadZone onUpload={handleUpload} onDemo={handleDemo} />
 
             {error && (
               <div className="mt-8 max-w-xl mx-auto p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-4 text-red-500">

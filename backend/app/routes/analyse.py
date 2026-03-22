@@ -7,7 +7,7 @@ from cachetools import TTLCache
 from pipeline.etl import run_etl, PasswordRequired
 from pipeline.categoriser import run_categorisation, get_spending_summary
 from pipeline.anomaly import run_anomaly_detection
-from pipeline.rag import build_rag_query, retrieve_and_rerank
+from pipeline.rag import build_rag_query, retrieve_relevant_guidance
 from pipeline.synthesiser import run_synthesis
 
 router = APIRouter()
@@ -62,7 +62,7 @@ async def analyse_transactions(
 
             # Stage 3: Anomaly detection
             yield sse_event("progress", {"step": 3, "total": 5, "message": "Scanning for unusual patterns...", "status": "running"})
-            anomalies, anomaly_narrative = run_anomaly_detection(df, summary)
+            anomalies = run_anomaly_detection(df, summary)
             yield sse_event("progress", {"step": 3, "total": 5,
                 "message": f"{len(anomalies)} anomalies detected" if anomalies else "No anomalies found",
                 "status": "done"})
@@ -70,23 +70,24 @@ async def analyse_transactions(
             # Stage 4: RAG
             yield sse_event("progress", {"step": 4, "total": 5, "message": "Retrieving financial guidance...", "status": "running"})
             rag_query = build_rag_query(summary, anomalies)
-            rag_context = retrieve_and_rerank(rag_query)
+            rag_result = retrieve_relevant_guidance(rag_query)
             yield sse_event("progress", {"step": 4, "total": 5,
-                "message": f"Retrieved {len(rag_context)} relevant guidelines",
+                "message": f"Retrieved {len(rag_result.get('passages', []))} relevant guidelines",
                 "status": "done"})
 
             # Stage 5: Synthesis
             yield sse_event("progress", {"step": 5, "total": 5, "message": "Generating your financial report...", "status": "running"})
-            report = run_synthesis(summary, anomalies, rag_context, filename)
+            report = run_synthesis(summary, anomalies, rag_result, filename)
             
             # Format dates and handle NaN for JSON
             df_json = df.copy()
-            df_json['date'] = df_json['date'].dt.strftime('%Y-%m-%d')
+            if 'date' in df_json.columns:
+                df_json['date'] = df_json['date'].dt.strftime('%Y-%m-%d')
             # Replace NaN with None for JSON compliance
             df_json = df_json.where(pd.notnull(df_json), None)
             
             report['transactions'] = df_json.to_dict(orient='records')
-            report['anomaly_narrative'] = anomaly_narrative
+            # anomaly_narrative is now anomaly_summary inside the report
             report['metadata'] = metadata
             report['by_category'] = summary.get('by_category', {})
             report['by_month'] = summary.get('by_month', {})

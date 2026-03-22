@@ -108,12 +108,6 @@ export default function UploadZone({ onUpload, onDemo, isWaking }) {
         </button>
       </div>
 
-      {isWaking && (
-        <div className="mt-8 p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center gap-4 text-amber-500 max-w-md mx-auto">
-            <div className="spinner !border-amber-500/20 !border-t-amber-500"></div>
-            <p className="text-sm font-medium">Waking up server... this takes ~20s on first load</p>
-        </div>
-      )}
     </div>
   );
 }

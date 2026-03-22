@@ -1,122 +1,145 @@
 import os
-import numpy as np
-import pandas as pd
-from typing import List, Dict, Any
-from app.services.embeddings import get_bi_encoder, get_cross_encoder
+import json
+from pathlib import Path
+from app.services.groq_client import call_fast
 
 # Get absolute path to the backend directory
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-KNOWLEDGE_BASE_DIR = os.path.join(BASE_DIR, "data", "knowledge_base")
-_corpus = [] # Global in-memory corpus [{text, source_file, embedding}]
+BASE_DIR = Path(__file__).resolve().parent.parent
+KNOWLEDGE_BASE_DIR = BASE_DIR / "data" / "knowledge_base"
+_knowledge_base_text: str = ""  # Loaded once at startup, plain string
 
-def load_and_chunk_knowledge_base():
-    global _corpus
-    _corpus = []
-    
-    if not os.path.exists(KNOWLEDGE_BASE_DIR):
+def load_knowledge_base() -> None:
+    """
+    Called once at server startup via lifespan.
+    Reads all .txt files from knowledge_base/ directory.
+    Concatenates them into a single string with clear source labels.
+    Stores in module-level variable _knowledge_base_text.
+    NO embeddings, NO models, NO vector operations.
+    Just reading text files into memory — ~50KB total.
+    """
+    global _knowledge_base_text
+    chunks = []
+    if not KNOWLEDGE_BASE_DIR.exists():
         print(f"Knowledge base directory {KNOWLEDGE_BASE_DIR} not found.")
         return
 
-    bi_encoder = get_bi_encoder()
+    for txt_file in sorted(KNOWLEDGE_BASE_DIR.glob("*.txt")):
+        content = txt_file.read_text(encoding="utf-8").strip()
+        source_name = txt_file.stem.replace("_", " ").title()
+        chunks.append(f"=== SOURCE: {source_name} ===\n{content}")
     
-    for filename in os.listdir(KNOWLEDGE_BASE_DIR):
-        if filename.endswith('.txt'):
-            with open(os.path.join(KNOWLEDGE_BASE_DIR, filename), 'r') as f:
-                content = f.read()
-                
-            # Chunking: split on '. ' then regroup to ~300 tokens
-            sentences = content.split('. ')
-            current_chunk = []
-            current_len = 0
-            
-            for sentence in sentences:
-                sentence = sentence.strip()
-                if not sentence: continue
-                
-                # Rough token estimate
-                tokens = len(sentence.split())
-                if current_len + tokens > 300 and current_chunk:
-                    text = ". ".join(current_chunk) + "."
-                    _corpus.append({
-                        "text": text,
-                        "source_file": filename,
-                        "embedding": bi_encoder.encode(text)
-                    })
-                    # 50-token overlap (approx 2 sentences)
-                    current_chunk = current_chunk[-2:] if len(current_chunk) > 2 else []
-                    current_len = sum(len(s.split()) for s in current_chunk)
-                
-                current_chunk.append(sentence)
-                current_len += tokens
-            
-            if current_chunk:
-                text = ". ".join(current_chunk) + "."
-                _corpus.append({
-                    "text": text,
-                    "source_file": filename,
-                    "embedding": bi_encoder.encode(text)
-                })
-    
-    print(f"Loaded {len(_corpus)} chunks into memory.")
+    _knowledge_base_text = "\n\n".join(chunks)
+    print(f"Knowledge base loaded: {len(_knowledge_base_text)} characters from "
+          f"{len(list(KNOWLEDGE_BASE_DIR.glob('*.txt')))} files")
 
-def build_rag_query(summary: Dict[str, Any], anomalies: List[Dict[str, Any]]) -> str:
+
+def build_rag_query(summary: dict, anomalies: list) -> str:
+    """
+    Build a specific, targeted query from the user's actual spending data.
+    Never use a generic fixed query — always construct from real data.
+
+    Logic:
+    - Find top spending category (by total amount)
+    - Check savings rate (credit - debit) / credit
+    - Check if any Investment category transactions exist
+    - Check if anomalies were detected
+    """
     if not summary:
         return "general financial health personal savings India"
-        
-    # Logic from spec
-    top_cat = "N/A"
-    if summary.get('by_category'):
-        top_cat = max(summary['by_category'].items(), key=lambda x: x[1]['total'])[0]
-    
-    debit = summary.get('total_debit', 0)
-    credit = summary.get('total_credit', 0)
-    savings_rate = (credit - debit) / credit * 100 if credit > 0 else -100
-    
-    has_info_on_investment = any(cat in summary.get('by_category', {}) for cat in ['Investment', 'Insurance'])
-    
-    queries = []
-    if top_cat in ['Food & Dining', 'Shopping', 'Entertainment']:
-        queries.append(f"recommended {top_cat.lower()} spending percentage monthly income India")
-        
-    if savings_rate < 20:
-        queries.append("minimum savings rate recommendation India emergency fund RBI")
-    
-    if not has_info_on_investment:
-        queries.append("importance of starting SIP mutual fund investment India young professionals")
-        
-    if anomalies:
-        queries.append("unusual transactions financial safety")
-        
-    final_query = " ".join(queries[:3]) # Limit to 3 angles
-    return final_query or "general financial health personal savings India"
 
-def retrieve_and_rerank(query: str, top_n: int = 5) -> List[Dict[str, Any]]:
-    global _corpus
-    if not _corpus:
-        return []
-        
-    bi_encoder = get_bi_encoder()
-    query_emb = bi_encoder.encode(query)
-    
-    # Stage 1: Bi-encoder cosine similarity
-    candidates = []
-    for chunk in _corpus:
-        score = np.dot(query_emb, chunk['embedding']) / (np.linalg.norm(query_emb) * np.linalg.norm(chunk['embedding']))
-        candidates.append({
-            "text": chunk['text'],
-            "source_file": chunk['source_file'],
-            "score": float(score)
-        })
-    
-    candidates = sorted(candidates, key=lambda x: x['score'], reverse=True)[:15]
-    
-    # Stage 2: Cross-encoder re-ranking
-    cross_encoder = get_cross_encoder()
-    pairs = [(query, c['text']) for c in candidates]
-    rerank_scores = cross_encoder.predict(pairs)
-    
-    for i, score in enumerate(rerank_scores):
-        candidates[i]['score'] = float(score)
-        
-    final_top = sorted(candidates, key=lambda x: x['score'], reverse=True)[:top_n]
-    return final_top
+    top_category = max(
+        summary.get("by_category", {}).items(),
+        key=lambda x: x[1].get("total", 0),
+        default=("Other", {})
+    )[0]
+
+    savings_rate = summary.get("savings_rate", 0)
+    has_investment = "Investment" in summary.get("by_category", {})
+    has_anomalies = len(anomalies) > 0
+
+    parts = []
+    parts.append(
+        f"{top_category} is top spending category at "
+        f"{summary.get('by_category', {}).get(top_category, {}).get('percentage', 0):.0f}% "
+        f"of total expenses. Recommended {top_category.lower()} budget India."
+    )
+
+    if savings_rate < 20:
+        parts.append(
+            f"Savings rate is {savings_rate:.0f}%. "
+            f"Minimum recommended savings rate India emergency fund."
+        )
+    if not has_investment:
+        parts.append(
+            "No SIP or mutual fund investments found. "
+            "Starting investments Section 80C PPF ELSS India."
+        )
+    if has_anomalies:
+        parts.append("Suspicious transactions detected. Financial safety India.")
+
+    return " ".join(parts)
+
+
+def retrieve_relevant_guidance(query: str) -> dict:
+    """
+    LLM-as-Retriever: sends the full knowledge base + query to Groq in one call.
+    Groq identifies the 3 most relevant passages and returns them structured.
+    """
+    if not _knowledge_base_text:
+        return _get_fallback_guidance()
+
+    prompt = f"""You are a financial knowledge retrieval system.
+
+KNOWLEDGE BASE:
+{_knowledge_base_text}
+
+USER QUERY:
+{query}
+
+Task: Identify the 3 most relevant passages from the knowledge base that directly
+address this query. For each passage, extract the key actionable insight.
+
+Respond ONLY with valid JSON in this exact format:
+{{
+  "passages": [
+    {{
+      "source": "source name from the === SOURCE === header",
+      "text": "the most relevant 2-3 sentences from that source",
+      "relevance_reason": "one sentence explaining why this is relevant to the query"
+    }}
+  ],
+  "combined_context": "a single paragraph combining the key guidance from all 3 passages, written as coherent advice"
+}}
+
+Important: Extract actual text from the knowledge base. Do not make up content."""
+
+    try:
+        response = call_fast(prompt, max_tokens=800)
+        # Strip markdown code blocks if present
+        clean = response.strip()
+        if clean.startswith("```"):
+            clean = clean.split("```")[1]
+            if clean.startswith("json"):
+                clean = clean[4:]
+        result = json.loads(clean.strip())
+        return result
+    except Exception as e:
+        print(f"RAG retrieval error: {e}")
+        return _get_fallback_guidance()
+
+
+def _get_fallback_guidance() -> dict:
+    """Minimal fallback if knowledge base or LLM call fails."""
+    return {
+        "passages": [
+            {
+                "source": "General Guidance",
+                "text": "Aim to save at least 20% of your monthly income. "
+                        "Build an emergency fund covering 3-6 months of expenses.",
+                "relevance_reason": "Universal financial health principles"
+            }
+        ],
+        "combined_context": "Follow the 50/30/20 rule: 50% on needs, 30% on wants, "
+                           "20% on savings. Start a SIP in mutual funds early. "
+                           "Use Section 80C to save up to ₹1.5 lakh in taxes annually."
+    }
